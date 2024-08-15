@@ -4,6 +4,8 @@ import com.linkmeng.managersystem.business.UserService;
 
 import com.linkmeng.managersystem.common.ResourceUtil;
 import com.linkmeng.managersystem.common.constant.I18nConstant;
+import com.linkmeng.managersystem.model.User;
+import com.linkmeng.managersystem.role.RequiredRole;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,10 +31,12 @@ public class UserController {
      *
      * @param resource 资源ID
      */
+    @RequiredRole({User.Role.ADMIN})
     @GetMapping("/{resource}")
-    public void authCheck(@PathVariable String resource) {
+    public void authCheck(@PathVariable String resource, Integer userId) {
         // TODO: 校验
         log.info(ResourceUtil.of(I18nConstant.I18N_FORMAT_GET_FILE + ".message"));
+        log.warn("current userId: {}", userId);
         userService.checkAccount(0, resource); // TODO: userId
     }
 }
