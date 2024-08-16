@@ -90,13 +90,13 @@ public class User {
      */
     private static void checkUserAndThrow(User user) throws CommonException {
         if (user == null) {
-            throw new InputIllegalException(I18nConstant.COMMON_INPUT_PARAM_CHECK_FAILED, "user");
+            throw new InputIllegalException("user");
         } else if (user.getUserId() == null || user.getUserId() < 0) {
-            throw new InputIllegalException(I18nConstant.COMMON_INPUT_PARAM_CHECK_FAILED, "user.userId");
+            throw new InputIllegalException("user.userId");
         } else if (StringUtils.isEmpty(user.getAccountName())) {
-            throw new InputIllegalException(I18nConstant.COMMON_INPUT_PARAM_CHECK_FAILED, "user.accountName");
+            throw new InputIllegalException("user.accountName");
         } else if (user.getRole() == null) {
-            throw new InputIllegalException(I18nConstant.COMMON_INPUT_PARAM_CHECK_FAILED, "user.role");
+            throw new InputIllegalException("user.role");
         }
     }
 }

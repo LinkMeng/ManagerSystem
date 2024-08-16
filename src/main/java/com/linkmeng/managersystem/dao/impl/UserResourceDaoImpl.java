@@ -4,9 +4,11 @@ import com.linkmeng.managersystem.common.exception.CommonException;
 import com.linkmeng.managersystem.dao.UserResourceDao;
 import com.linkmeng.managersystem.common.cache.ResourceFileCache;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -26,6 +28,10 @@ public class UserResourceDaoImpl implements UserResourceDao {
     @Override
     public int insertUserResource(Integer userId, Set<String> resources) throws CommonException {
         ResourceFileCache<Integer, Set<String>> mapper = getMapper();
+        if (CollectionUtils.isEmpty(resources)) {
+            mapper.remove(userId);
+            return 0;
+        }
         mapper.put(userId, resources);
         return resources.size();
     }
@@ -33,7 +39,8 @@ public class UserResourceDaoImpl implements UserResourceDao {
     @Override
     public Set<String> queryResourcesByUserId(Integer userId) throws CommonException {
         ResourceFileCache<Integer, Set<String>> mapper = getMapper();
-        return mapper.get(userId);
+        Set<String> resources = mapper.get(userId);
+        return CollectionUtils.isEmpty(resources) ? Collections.emptySet() : resources;
     }
 
     /**

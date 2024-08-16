@@ -5,6 +5,8 @@ import com.linkmeng.managersystem.common.exception.CommonException;
 import com.linkmeng.managersystem.common.util.JsonUtil;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +33,26 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ResourceFileCache<K, V> {
-    private static final long CACHE_REFRESH_TIME = TimeUnit.SECONDS.toMillis(5);
+    private static final long CACHE_REFRESH_TIME = TimeUnit.SECONDS.toMillis(10);
+
+    /**
+     * 资源文件缓存记录
+     *
+     * @since 2024-08-17
+     */
+    @Getter
+    @AllArgsConstructor
+    private static final class RecordValue<V> {
+        /**
+         * 更新时间
+         */
+        private final long updatedTime;
+
+        /**
+         * 记录值
+         */
+        private final V value;
+    }
 
     /**
      * 缓存持久化线程池
@@ -39,9 +60,9 @@ public class ResourceFileCache<K, V> {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     /**
-     * 文件访问锁
+     * 文件读写和缓存更新锁
      */
-    private final ReentrantLock targetFileLock = new ReentrantLock();
+    private final ReentrantLock targetFileAndCacheLock = new ReentrantLock();
 
     /**
      * 目标文件路径
@@ -51,7 +72,7 @@ public class ResourceFileCache<K, V> {
     /**
      * 缓存
      */
-    private Map<K, V> cache = new ConcurrentHashMap<>();
+    private final Map<K, RecordValue<V>> cache = new ConcurrentHashMap<>();
 
     /**
      * 缓存持久化任务
@@ -72,7 +93,7 @@ public class ResourceFileCache<K, V> {
      */
     public V get(K key) throws CommonException {
         readFromTargetFile();
-        return cache.get(key);
+        return cache.get(key).getValue();
     }
 
     /**
@@ -99,10 +120,12 @@ public class ResourceFileCache<K, V> {
      * 从文件读取缓存
      */
     private void doReadFile() {
-        try (AutoCloseableLock ignored = new AutoCloseableLock(targetFileLock)) {
+        try (AutoCloseableLock ignored = new AutoCloseableLock(targetFileAndCacheLock)) {
             File targetFile = getTargetFile(targetFilePath);
-            Map<K, V> cacheFileMap = JsonUtil.fromJsonMap(targetFile, new TypeReference<Map<K, V>>() {});
-            cache = new ConcurrentHashMap<>(cacheFileMap);
+            JsonUtil.fromJsonMap(targetFile, new TypeReference<Map<K, RecordValue<V>>>() {}).forEach((key, value) ->
+                cache.merge(key, value, (oldVal, newVal) ->
+                    newVal.getUpdatedTime() > oldVal.getUpdatedTime() ? newVal : oldVal));
+            cache.entrySet().removeIf(entry -> entry.getValue().getValue() == null);
         } catch (CommonException exception) {
             log.error("Get cache file failed.", exception);
         }
@@ -116,8 +139,26 @@ public class ResourceFileCache<K, V> {
      * @throws CommonException 抛出服务异常
      */
     public void put(K key, V value) throws CommonException {
-        cache.put(key, value);
-        lastRefreshTime = System.currentTimeMillis();
+        try (AutoCloseableLock ignored = new AutoCloseableLock(targetFileAndCacheLock)) {
+            long now = System.currentTimeMillis();
+            cache.put(key, new RecordValue<>(now, value));
+            lastRefreshTime = now;
+        }
+        writeToTargetFile();
+    }
+
+    /**
+     * 从缓存中移除
+     *
+     * @param key 缓存Key
+     * @throws CommonException 抛出服务异常
+     */
+    public void remove(K key) throws CommonException {
+        try (AutoCloseableLock ignored = new AutoCloseableLock(targetFileAndCacheLock)) {
+            long now = System.currentTimeMillis();
+            cache.put(key, new RecordValue<>(now, null)); // 置为null，将在写文件时删除
+            lastRefreshTime = now;
+        }
         writeToTargetFile();
     }
 
@@ -145,7 +186,8 @@ public class ResourceFileCache<K, V> {
      * 将缓存写入到文件
      */
     private void doWriteFile() {
-        try (AutoCloseableLock ignored = new AutoCloseableLock(targetFileLock)) {
+        try (AutoCloseableLock ignored = new AutoCloseableLock(targetFileAndCacheLock)) {
+            cache.entrySet().removeIf(entry -> entry.getValue().getValue() == null);
             JsonUtil.toJson(cache, getTargetFile(targetFilePath));
         } catch (CommonException exception) {
             log.error("Read cache file failed.", exception);

@@ -21,7 +21,7 @@ public class UserResource {
     /**
      * 用户ID
      */
-    private int userId;
+    private Integer userId;
 
     /**
      * 资源ID列表

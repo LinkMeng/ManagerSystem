@@ -1,5 +1,6 @@
 package com.linkmeng.managersystem.common.exception;
 
+import com.linkmeng.managersystem.common.constant.I18nConstant;
 import com.linkmeng.managersystem.common.exception.handler.HttpStatusException;
 
 import org.springframework.http.HttpStatus;
@@ -15,11 +16,10 @@ public class InputIllegalException extends CommonException implements HttpStatus
     /**
      * 构造方法
      *
-     * @param id 国际化ID
-     * @param args 国际化参数
+     * @param paramName 参数名称
      */
-    public InputIllegalException(String id, Object... args) {
-        super(id, MESSAGE, args);
+    public InputIllegalException(String paramName) {
+        super(I18nConstant.COMMON_INPUT_PARAM_CHECK_FAILED, MESSAGE, paramName);
     }
 
     @Override

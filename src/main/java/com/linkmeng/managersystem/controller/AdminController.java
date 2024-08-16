@@ -1,6 +1,9 @@
 package com.linkmeng.managersystem.controller;
 
 import com.linkmeng.managersystem.business.AdminService;
+import com.linkmeng.managersystem.common.exception.CommonException;
+import com.linkmeng.managersystem.common.exception.InputIllegalException;
+import com.linkmeng.managersystem.model.CommonMessage;
 import com.linkmeng.managersystem.model.User;
 import com.linkmeng.managersystem.model.UserResource;
 import com.linkmeng.managersystem.role.RequiredUserRole;
@@ -32,8 +35,12 @@ public class AdminController {
     @RequiredUserRole({User.Role.ADMIN})
     @PostMapping("/addUser")
     @ResponseBody
-    public void addUser(@RequestBody UserResource userResource) {
-        // 校验
-        adminService.setResource(userResource);
+    public CommonMessage addUser(@RequestBody UserResource userResource) throws CommonException {
+        if (userResource == null) {
+            throw new InputIllegalException("userResource");
+        } else if (userResource.getUserId() == null || userResource.getUserId() < 0) {
+            throw new InputIllegalException("userResource.userId");
+        }
+        return adminService.setResource(userResource);
     }
 }
