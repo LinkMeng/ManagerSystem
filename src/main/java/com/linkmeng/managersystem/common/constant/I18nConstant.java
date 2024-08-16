@@ -18,4 +18,7 @@ public final class I18nConstant {
     public static final String COMMON_SERIALIZE_USER_PARSE_FAILED = "common.serialize.userParseFailed";
 
     public static final String COMMON_INPUT_PARAM_CHECK_FAILED = "common.input.paramCheckFailed";
+
+    public static final String RESOURCE_CACHE_FILE_PATH_ILLEGAL = "resource.cache.filePathIllegal";
+    public static final String RESOURCE_CACHE_FILE_CREATE_FAILED = "resource.cache.fileCreateFailed";
 }
