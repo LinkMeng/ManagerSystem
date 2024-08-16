@@ -2,8 +2,6 @@ package com.linkmeng.managersystem.controller;
 
 import com.linkmeng.managersystem.business.UserService;
 import com.linkmeng.managersystem.common.exception.CommonException;
-import com.linkmeng.managersystem.common.util.ResourceUtil;
-import com.linkmeng.managersystem.common.constant.I18nConstant;
 import com.linkmeng.managersystem.model.BooleanMessage;
 import com.linkmeng.managersystem.model.User;
 import com.linkmeng.managersystem.role.RequiredUserRole;
