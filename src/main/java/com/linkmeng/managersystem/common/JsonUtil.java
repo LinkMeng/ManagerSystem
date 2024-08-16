@@ -25,7 +25,9 @@ public final class JsonUtil {
         try {
             return OBJECT_MAPPER.writeValueAsString(object);
         } catch (JsonProcessingException exception) {
-            throw new IllegalArgumentException(exception); // TODO
+            IllegalArgumentException throwable = new IllegalArgumentException("Failed to convert object to JSON");
+            throwable.setStackTrace(exception.getStackTrace());
+            throw throwable;
         }
     }
 
@@ -41,7 +43,9 @@ public final class JsonUtil {
         try {
             return OBJECT_MAPPER.readValue(json, clazz);
         } catch (JsonProcessingException exception) {
-            throw new IllegalArgumentException(exception); // TODO
+            IllegalArgumentException throwable = new IllegalArgumentException("Failed to convert JSON to object");
+            throwable.setStackTrace(exception.getStackTrace());
+            throw throwable;
         }
     }
 }

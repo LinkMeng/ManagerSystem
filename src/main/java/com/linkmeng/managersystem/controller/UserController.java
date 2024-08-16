@@ -1,11 +1,12 @@
 package com.linkmeng.managersystem.controller;
 
 import com.linkmeng.managersystem.business.UserService;
-
 import com.linkmeng.managersystem.common.ResourceUtil;
 import com.linkmeng.managersystem.common.constant.I18nConstant;
 import com.linkmeng.managersystem.model.User;
-import com.linkmeng.managersystem.role.RequiredRole;
+import com.linkmeng.managersystem.role.RequiredUserRole;
+
+import com.linkmeng.managersystem.role.RoleUserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +32,12 @@ public class UserController {
      *
      * @param resource 资源ID
      */
-    @RequiredRole({User.Role.ADMIN})
+    @RequiredUserRole({User.Role.ADMIN, User.Role.USER})
     @GetMapping("/{resource}")
-    public void authCheck(@PathVariable String resource, Integer userId) {
+    public void authCheck(@PathVariable String resource, @RoleUserInfo User userInfo) {
         // TODO: 校验
         log.info(ResourceUtil.of(I18nConstant.I18N_FORMAT_GET_FILE + ".message"));
-        log.warn("current userId: {}", userId);
+        log.warn("current userId: {}", userInfo.getUserId());
         userService.checkAccount(0, resource); // TODO: userId
     }
 }
