@@ -17,8 +17,8 @@ public class ResourceUtilTest {
     public void test_of_normal() {
         try (MockedStatic<Locale> mockedStatic = Mockito.mockStatic(Locale.class)) {
             mockedStatic.when(Locale::getDefault).thenReturn(Locale.US);
-            String message = ResourceUtil.of(I18nConstant.I18N_FORMAT_GET_FILE + ".message");
-            Assertions.assertEquals("!!i18n.format.getFile.message!!", message);
+            String message = ResourceUtil.of(I18nConstant.MESSAGE_ADMIN_ADD_USER_SUCCESS);
+            Assertions.assertEquals("!!message.admin.addUser.success!!", message);
         }
     }
 

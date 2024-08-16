@@ -7,6 +7,7 @@ import com.linkmeng.managersystem.common.util.JsonUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,16 +43,17 @@ public class ResourceFileCache<K, V> {
      */
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     private static final class RecordValue<V> {
         /**
          * 更新时间
          */
-        private final long updatedTime;
+        private long updatedTime;
 
         /**
          * 记录值
          */
-        private final V value;
+        private V value;
     }
 
     /**
@@ -93,7 +95,8 @@ public class ResourceFileCache<K, V> {
      */
     public V get(K key) throws CommonException {
         readFromTargetFile();
-        return cache.get(key).getValue();
+        RecordValue<V> recordValue = cache.get(key);
+        return recordValue == null ? null : recordValue.getValue();
     }
 
     /**
@@ -122,10 +125,11 @@ public class ResourceFileCache<K, V> {
     private void doReadFile() {
         try (AutoCloseableLock ignored = new AutoCloseableLock(targetFileAndCacheLock)) {
             File targetFile = getTargetFile(targetFilePath);
-            JsonUtil.fromJsonMap(targetFile, new TypeReference<Map<K, RecordValue<V>>>() {}).forEach((key, value) ->
-                cache.merge(key, value, (oldVal, newVal) ->
+            JsonUtil.fromJsonMap(targetFile, new TypeReference<Map<K, RecordValue<V>>>() {})
+                .forEach((key, value) -> cache.merge(key, value, (oldVal, newVal) ->
                     newVal.getUpdatedTime() > oldVal.getUpdatedTime() ? newVal : oldVal));
             cache.entrySet().removeIf(entry -> entry.getValue().getValue() == null);
+            log.info("Read and merge cache file success.");
         } catch (CommonException exception) {
             log.error("Get cache file failed.", exception);
         }
@@ -189,6 +193,7 @@ public class ResourceFileCache<K, V> {
         try (AutoCloseableLock ignored = new AutoCloseableLock(targetFileAndCacheLock)) {
             cache.entrySet().removeIf(entry -> entry.getValue().getValue() == null);
             JsonUtil.toJson(cache, getTargetFile(targetFilePath));
+            log.info("Write cache file success.");
         } catch (CommonException exception) {
             log.error("Read cache file failed.", exception);
         }

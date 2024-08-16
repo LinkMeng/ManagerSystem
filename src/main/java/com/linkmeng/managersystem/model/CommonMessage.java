@@ -1,7 +1,7 @@
 package com.linkmeng.managersystem.model;
 
 import com.linkmeng.managersystem.common.util.ResourceUtil;
-import lombok.AccessLevel;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,10 +11,10 @@ import lombok.Getter;
  * @since 2024-08-17
  */
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class CommonMessage {
     /**
-     * 操作结果
+     * 操作信息
      */
     private final String message;
 
