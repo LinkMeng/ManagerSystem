@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * 用户资源模型
@@ -26,5 +26,5 @@ public class UserResource {
     /**
      * 资源ID列表
      */
-    private List<String> endpoint;
+    private Set<String> endpoint;
 }
