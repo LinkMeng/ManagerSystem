@@ -4,6 +4,7 @@ import com.linkmeng.managersystem.common.constant.I18nConstant;
 import com.linkmeng.managersystem.common.exception.CommonException;
 import com.linkmeng.managersystem.common.exception.PermissionException;
 import com.linkmeng.managersystem.model.User;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,12 +15,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户权限校验切面

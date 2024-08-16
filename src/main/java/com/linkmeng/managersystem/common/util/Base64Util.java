@@ -1,9 +1,8 @@
-package com.linkmeng.managersystem.common;
+package com.linkmeng.managersystem.common.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
 import java.util.Base64;
 
 /**

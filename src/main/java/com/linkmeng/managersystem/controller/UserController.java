@@ -1,12 +1,12 @@
 package com.linkmeng.managersystem.controller;
 
 import com.linkmeng.managersystem.business.UserService;
-import com.linkmeng.managersystem.common.ResourceUtil;
+import com.linkmeng.managersystem.common.util.ResourceUtil;
 import com.linkmeng.managersystem.common.constant.I18nConstant;
 import com.linkmeng.managersystem.model.User;
 import com.linkmeng.managersystem.role.RequiredUserRole;
-
 import com.linkmeng.managersystem.role.RoleUserInfo;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

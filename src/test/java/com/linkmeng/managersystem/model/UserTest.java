@@ -1,7 +1,6 @@
 package com.linkmeng.managersystem.model;
 
-import com.linkmeng.managersystem.common.Base64Util;
-import com.linkmeng.managersystem.common.JsonUtil;
+import com.linkmeng.managersystem.common.util.JsonUtil;
 import com.linkmeng.managersystem.common.exception.CommonException;
 
 import org.junit.jupiter.api.Assertions;

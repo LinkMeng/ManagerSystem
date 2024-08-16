@@ -1,4 +1,4 @@
-package com.linkmeng.managersystem.common;
+package com.linkmeng.managersystem.common.util;
 
 import com.linkmeng.managersystem.common.constant.I18nConstant;
 

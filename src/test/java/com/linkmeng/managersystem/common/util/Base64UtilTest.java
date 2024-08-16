@@ -1,4 +1,4 @@
-package com.linkmeng.managersystem.common;
+package com.linkmeng.managersystem.common.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

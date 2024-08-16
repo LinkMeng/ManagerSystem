@@ -1,7 +1,5 @@
-package com.linkmeng.managersystem.common;
+package com.linkmeng.managersystem.common.util;
 
-import com.linkmeng.managersystem.common.constant.I18nConstant;
-import com.linkmeng.managersystem.common.exception.CommonException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

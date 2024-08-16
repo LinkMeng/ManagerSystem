@@ -1,11 +1,13 @@
 package com.linkmeng.managersystem.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.linkmeng.managersystem.common.Base64Util;
-import com.linkmeng.managersystem.common.JsonUtil;
+
+import com.linkmeng.managersystem.common.util.Base64Util;
+import com.linkmeng.managersystem.common.util.JsonUtil;
 import com.linkmeng.managersystem.common.constant.I18nConstant;
 import com.linkmeng.managersystem.common.exception.CommonException;
 import com.linkmeng.managersystem.common.exception.InputIllegalException;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

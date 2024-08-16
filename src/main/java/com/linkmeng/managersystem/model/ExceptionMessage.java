@@ -1,6 +1,6 @@
 package com.linkmeng.managersystem.model;
 
-import com.linkmeng.managersystem.common.ResourceUtil;
+import com.linkmeng.managersystem.common.util.ResourceUtil;
 
 import com.linkmeng.managersystem.common.exception.CommonException;
 import lombok.AccessLevel;
