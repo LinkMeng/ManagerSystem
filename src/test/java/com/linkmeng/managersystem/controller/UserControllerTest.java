@@ -1,6 +1,7 @@
 package com.linkmeng.managersystem.controller;
 
 import com.linkmeng.managersystem.common.util.JsonUtil;
+import com.linkmeng.managersystem.llt.CacheFileMock;
 import com.linkmeng.managersystem.model.User;
 
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,9 +38,13 @@ public class UserControllerTest {
 
         Map<String, Object> cache = buildMockedCache();
 
-        try (MockedStatic<JsonUtil> jsonUtilMock = Mockito.mockStatic(JsonUtil.class)) {
+        try (MockedStatic<JsonUtil> jsonUtilMock = Mockito.mockStatic(JsonUtil.class);
+             CacheFileMock cacheFileMock = new CacheFileMock();
+             MockedStatic<Paths> pathsMock = Mockito.mockStatic(Paths.class)) {
             jsonUtilMock.when(() -> JsonUtil.fromJsonMap(Mockito.any(File.class), Mockito.any())).thenReturn(cache);
             jsonUtilMock.when(() -> JsonUtil.fromJson(Mockito.anyString(), Mockito.any())).thenReturn(user);
+            pathsMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(cacheFileMock.getPathMock());
+
             mockMvc.perform(MockMvcRequestBuilders
                     .get("/user/" + resourceName)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -57,9 +63,13 @@ public class UserControllerTest {
 
         Map<String, Object> cache = buildMockedCache();
 
-        try (MockedStatic<JsonUtil> jsonUtilMock = Mockito.mockStatic(JsonUtil.class)) {
+        try (MockedStatic<JsonUtil> jsonUtilMock = Mockito.mockStatic(JsonUtil.class);
+             CacheFileMock cacheFileMock = new CacheFileMock();
+             MockedStatic<Paths> pathsMock = Mockito.mockStatic(Paths.class)) {
             jsonUtilMock.when(() -> JsonUtil.fromJsonMap(Mockito.any(File.class), Mockito.any())).thenReturn(cache);
             jsonUtilMock.when(() -> JsonUtil.fromJson(Mockito.anyString(), Mockito.any())).thenReturn(user);
+            pathsMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(cacheFileMock.getPathMock());
+
             mockMvc.perform(MockMvcRequestBuilders
                     .get("/user/" + resourceName)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -77,9 +87,13 @@ public class UserControllerTest {
 
         Map<String, Object> cache = buildMockedCache();
 
-        try (MockedStatic<JsonUtil> jsonUtilMock = Mockito.mockStatic(JsonUtil.class)) {
+        try (MockedStatic<JsonUtil> jsonUtilMock = Mockito.mockStatic(JsonUtil.class);
+             CacheFileMock cacheFileMock = new CacheFileMock();
+             MockedStatic<Paths> pathsMock = Mockito.mockStatic(Paths.class)) {
             jsonUtilMock.when(() -> JsonUtil.fromJsonMap(Mockito.any(File.class), Mockito.any())).thenReturn(cache);
             jsonUtilMock.when(() -> JsonUtil.fromJson(Mockito.anyString(), Mockito.any())).thenReturn(user);
+            pathsMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(cacheFileMock.getPathMock());
+
             mockMvc.perform(MockMvcRequestBuilders
                     .get("/user/" + resourceName)
                     .contentType(MediaType.APPLICATION_JSON))
@@ -95,9 +109,13 @@ public class UserControllerTest {
 
         Map<String, Object> cache = buildMockedCache();
 
-        try (MockedStatic<JsonUtil> jsonUtilMock = Mockito.mockStatic(JsonUtil.class)) {
+        try (MockedStatic<JsonUtil> jsonUtilMock = Mockito.mockStatic(JsonUtil.class);
+             CacheFileMock cacheFileMock = new CacheFileMock();
+             MockedStatic<Paths> pathsMock = Mockito.mockStatic(Paths.class)) {
             jsonUtilMock.when(() -> JsonUtil.fromJsonMap(Mockito.any(File.class), Mockito.any())).thenReturn(cache);
             jsonUtilMock.when(() -> JsonUtil.fromJson(Mockito.anyString(), Mockito.any())).thenReturn(user);
+            pathsMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(cacheFileMock.getPathMock());
+
             mockMvc.perform(MockMvcRequestBuilders
                     .get("/user/" + resourceName)
                     .contentType(MediaType.APPLICATION_JSON)
