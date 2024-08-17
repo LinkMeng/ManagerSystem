@@ -1,11 +1,6 @@
 package com.linkmeng.managersystem.controller;
 
-import com.linkmeng.managersystem.common.util.JsonUtil;
-import com.linkmeng.managersystem.model.User;
-
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,111 +9,61 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AdminControllerTest {
 
     @Autowired
-    public UserController userController;
-
-    @Autowired
     private MockMvc mockMvc;
-
-    private static Map<String, Object> buildMockedCache() throws Exception {
-        String className = "com.linkmeng.managersystem.common.cache.ResourceFileCache$RecordValue";
-        Class<?> innerClass = Class.forName(className);
-        Constructor<?> constructor = innerClass.getDeclaredConstructor(long.class, Object.class);
-        constructor.setAccessible(true);
-        Object instance = constructor.newInstance(Long.MAX_VALUE, Collections.singletonList("resource A"));
-
-        Map<String, Object> cache = new HashMap<>();
-        cache.put("123456", instance);
-        return cache;
-    }
 
     @Test
     public void test_authCheck_normal() throws Exception {
-        User user = User.builder().userId(123456).accountName("X").role(User.Role.USER).build();
-        String baseCode = Base64.getEncoder().encodeToString(JsonUtil.toJson(user).getBytes());
-        String resourceName = "resource A";
-
-        Map<String, Object> cache = buildMockedCache();
-
-        try (MockedStatic<JsonUtil> mockedStatic = Mockito.mockStatic(JsonUtil.class)) {
-            mockedStatic.when(() -> JsonUtil.fromJsonMap(Mockito.any(File.class), Mockito.any())).thenReturn(cache);
-            mockedStatic.when(() -> JsonUtil.fromJson(Mockito.anyString(), Mockito.any())).thenReturn(user);
-            mockMvc.perform(MockMvcRequestBuilders
-                    .get("/user/" + resourceName)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("User-Info", baseCode))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.value").isBoolean())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.value").value(true));
-        }
+        String baseCode = "ewogICAgInVzZXJJZCI6IDEyMzQ1NiwKICAgICJhY2NvdW50TmFtZSI6ICJYWFhYWFhYIiwKICAgICJyb2xlIjogImFkbWluIgp9";
+        String requestBody = "{\"userId\": 123456,\"endpoint\": [\"resource A\",\"resource B\",\"resource C\"]}";
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/admin/addUser")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Info", baseCode)
+                .content(requestBody))
+            .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    public void test_authCheck_normalFailed() throws Exception {
-        User user = User.builder().userId(123456).accountName("X").role(User.Role.USER).build();
-        String baseCode = Base64.getEncoder().encodeToString(JsonUtil.toJson(user).getBytes());
-        String resourceName = "resource D";
-
-        Map<String, Object> cache = buildMockedCache();
-
-        try (MockedStatic<JsonUtil> mockedStatic = Mockito.mockStatic(JsonUtil.class)) {
-            mockedStatic.when(() -> JsonUtil.fromJsonMap(Mockito.any(File.class), Mockito.any())).thenReturn(cache);
-            mockedStatic.when(() -> JsonUtil.fromJson(Mockito.anyString(), Mockito.any())).thenReturn(user);
-            mockMvc.perform(MockMvcRequestBuilders
-                    .get("/user/" + resourceName)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("User-Info", baseCode))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.value").isBoolean())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.value").value(false));
-        }
+    public void test_authCheck_badRequest() throws Exception {
+        String baseCode = "ewogICAgInVzZXJJZCI6IDEyMzQ1NiwKICAgICJhY2NvdW50TmFtZSI6ICJYWFhYWFhYIiwKICAgICJyb2xlIjogImFkbWluIgp9";
+        String requestBody = "{\"endpoint\": [\"resource A\",\"resource B\",\"resource C\"]}";
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/admin/addUser")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Info", baseCode)
+                .content(requestBody))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.suggestion").isString());
     }
 
     @Test
     public void test_authCheck_forbidden() throws Exception {
-        User user = User.builder().userId(123456).accountName("X").role(User.Role.USER).build();
-        String resourceName = "resource D";
-
-        Map<String, Object> cache = buildMockedCache();
-
-        try (MockedStatic<JsonUtil> mockedStatic = Mockito.mockStatic(JsonUtil.class)) {
-            mockedStatic.when(() -> JsonUtil.fromJsonMap(Mockito.any(File.class), Mockito.any())).thenReturn(cache);
-            mockedStatic.when(() -> JsonUtil.fromJson(Mockito.anyString(), Mockito.any())).thenReturn(user);
-            mockMvc.perform(MockMvcRequestBuilders
-                    .get("/user/" + resourceName)
-                    .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isForbidden())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.suggestion").isString());
-        }
+        String baseCode = "eyJ1c2VySWQiOiAxMjM0NTYsICJhY2NvdW50TmFtZSI6ICJYWFhYWFhYIiwgInJvbGUiOiAidXNlciJ9";
+        String requestBody = "{\"userId\": 123456,\"endpoint\": [\"resource A\",\"resource B\",\"resource C\"]}";
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/admin/addUser")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Info", baseCode)
+                .content(requestBody))
+            .andExpect(MockMvcResultMatchers.status().isForbidden())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.suggestion").isString());
     }
 
     @Test
     public void test_authCheck_internalServerError() throws Exception {
-        User user = User.builder().userId(123456).accountName("X").role(User.Role.USER).build();
-        String resourceName = "resource D";
-
-        Map<String, Object> cache = buildMockedCache();
-
-        try (MockedStatic<JsonUtil> mockedStatic = Mockito.mockStatic(JsonUtil.class)) {
-            mockedStatic.when(() -> JsonUtil.fromJsonMap(Mockito.any(File.class), Mockito.any())).thenReturn(cache);
-            mockedStatic.when(() -> JsonUtil.fromJson(Mockito.anyString(), Mockito.any())).thenReturn(user);
-            mockMvc.perform(MockMvcRequestBuilders
-                    .get("/user/" + resourceName)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("User-Info", "e==="))
-                .andExpect(MockMvcResultMatchers.status().isInternalServerError())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.suggestion").isString());
-        }
+        String baseCode = "e====";
+        String requestBody = "{\"userId\": 123456,\"endpoint\": [\"resource A\",\"resource B\",\"resource C\"]}";
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/admin/addUser")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("User-Info", baseCode)
+                .content(requestBody))
+            .andExpect(MockMvcResultMatchers.status().isInternalServerError())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.suggestion").isString());
     }
 }
