@@ -41,6 +41,24 @@ public class AdminControllerTest {
     }
 
     @Test
+    public void test_authCheck_normalRemove() throws Exception {
+        String baseCode = "ewogICAgInVzZXJJZCI6IDEyMzQ1NiwKICAgICJhY2NvdW50TmFtZSI6ICJYWFhYWFhYIiwKICAgICJyb2xlIjogImFkbWluIgp9";
+        String requestBody = "{\"userId\": 123456,\"endpoint\": []}";
+
+        try (CacheFileMock cacheFileMock = new CacheFileMock();
+             MockedStatic<Paths> pathsMock = Mockito.mockStatic(Paths.class)) {
+            pathsMock.when(() -> Paths.get(Mockito.anyString())).thenReturn(cacheFileMock.getPathMock());
+
+            mockMvc.perform(MockMvcRequestBuilders
+                    .post("/admin/addUser")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("User-Info", baseCode)
+                    .content(requestBody))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        }
+    }
+
+    @Test
     public void test_authCheck_badRequest() throws Exception {
         String baseCode = "ewogICAgInVzZXJJZCI6IDEyMzQ1NiwKICAgICJhY2NvdW50TmFtZSI6ICJYWFhYWFhYIiwKICAgICJyb2xlIjogImFkbWluIgp9";
         String requestBody = "{\"endpoint\": [\"resource A\",\"resource B\",\"resource C\"]}";
