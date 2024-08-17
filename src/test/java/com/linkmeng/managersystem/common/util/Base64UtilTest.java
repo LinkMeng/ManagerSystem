@@ -7,7 +7,7 @@ public class Base64UtilTest {
 
     @Test
     public void test_decode_normal() {
-        // Data
+        // Given
         String base64 = "SGVsbG8sIFdvcmxkIQ==";
         // When
         String actual = Base64Util.decode(base64);

@@ -18,7 +18,7 @@ public class ResourceUtilTest {
         try (MockedStatic<Locale> mockedStatic = Mockito.mockStatic(Locale.class)) {
             mockedStatic.when(Locale::getDefault).thenReturn(Locale.US);
             String message = ResourceUtil.of(I18nConstant.MESSAGE_ADMIN_ADD_USER_SUCCESS);
-            Assertions.assertEquals("!!message.admin.addUser.success!!", message);
+            Assertions.assertEquals("Successfully configured {1} resources for user {0}.", message);
         }
     }
 

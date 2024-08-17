@@ -12,7 +12,7 @@ public class UserTest {
 
     @Test
     public void test_ofBase64_normal() throws CommonException {
-        // Data
+        // Given
         User expectecUser = User.builder().userId(123456).accountName("XXXXXXX").role(User.Role.ADMIN).build();
         String userBase64Str = Base64.getEncoder().encodeToString(JsonUtil.toJson(expectecUser).getBytes());
         // When
