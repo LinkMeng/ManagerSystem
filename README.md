@@ -11,3 +11,4 @@
 
 1. [系统简介](./docs/README.md)
 2. [接口文档](./docs/Interface.md)
+3. [功能说明](./docs/Coding.md)

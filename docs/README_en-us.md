@@ -1,5 +1,7 @@
 # Home code
 
+[中文文档](./READM.md)
+
 ## Manager System
 
 Please design a Spring/SpringBoot system that would do the following:

@@ -1,5 +1,7 @@
 # Home code
 
+[English Version](./README_en-us.md)
+
 ## 管理系统
 
 请设计一个Spring/SpringBoot系统，它将执行以下操作：
