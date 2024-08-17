@@ -25,6 +25,6 @@ public class AdminServiceImpl implements AdminService {
     public CommonMessage setResource(UserResource userResource) throws CommonException {
         Integer userId = userResource.getUserId();
         int resourceNum = userResourceDao.insertUserResource(userId, userResource.getEndpoint());
-        return CommonMessage.of(I18nConstant.MESSAGE_ADMIN_ADD_USER_SUCCESS, userId, resourceNum);
+        return CommonMessage.of(true, I18nConstant.MESSAGE_ADMIN_ADD_USER_SUCCESS, userId, resourceNum);
     }
 }

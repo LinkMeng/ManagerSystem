@@ -1,7 +1,7 @@
 package com.linkmeng.managersystem.business;
 
 import com.linkmeng.managersystem.common.exception.CommonException;
-import com.linkmeng.managersystem.model.BooleanMessage;
+import com.linkmeng.managersystem.model.CommonMessage;
 
 /**
  * 用户服务接口
@@ -17,5 +17,5 @@ public interface UserService {
      * @return 操作结果
      * @throws CommonException 抛出服务异常
      */
-    BooleanMessage checkAccount(Integer userId, String resource) throws CommonException;
+    CommonMessage checkAccount(Integer userId, String resource) throws CommonException;
 }

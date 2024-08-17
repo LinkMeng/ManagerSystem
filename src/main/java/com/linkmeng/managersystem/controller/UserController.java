@@ -2,7 +2,7 @@ package com.linkmeng.managersystem.controller;
 
 import com.linkmeng.managersystem.business.UserService;
 import com.linkmeng.managersystem.common.exception.CommonException;
-import com.linkmeng.managersystem.model.BooleanMessage;
+import com.linkmeng.managersystem.model.CommonMessage;
 import com.linkmeng.managersystem.model.User;
 import com.linkmeng.managersystem.role.RequiredUserRole;
 import com.linkmeng.managersystem.role.RoleUserInfo;
@@ -39,7 +39,7 @@ public class UserController {
     @RequiredUserRole({User.Role.ADMIN, User.Role.USER})
     @GetMapping("/{resource}")
     @ResponseBody
-    public BooleanMessage authCheck(@PathVariable String resource, @RoleUserInfo User userInfo) throws CommonException {
+    public CommonMessage authCheck(@PathVariable String resource, @RoleUserInfo User userInfo) throws CommonException {
         if (StringUtils.isEmpty(resource)) {
             throw new IllegalArgumentException("resource");
         }

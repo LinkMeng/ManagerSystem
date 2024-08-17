@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -131,7 +132,7 @@ public class ResourceFileCache<K, V> {
             cache.entrySet().removeIf(entry -> entry.getValue().getValue() == null);
             log.info("Read and merge cache file success.");
         } catch (CommonException exception) {
-            log.error("Get cache file failed.", exception);
+            log.error("Read cache file failed.", exception);
         }
     }
 
@@ -195,7 +196,7 @@ public class ResourceFileCache<K, V> {
             JsonUtil.toJson(cache, getTargetFile(targetFilePath));
             log.info("Write cache file success.");
         } catch (CommonException exception) {
-            log.error("Read cache file failed.", exception);
+            log.error("Write cache file failed.", exception);
         }
     }
 
@@ -220,7 +221,7 @@ public class ResourceFileCache<K, V> {
      * @return 缓存目标文件对象
      * @throws CommonException 抛出服务异常
      */
-    private static File getTargetFile(String targetFilePath) throws CommonException {
+    synchronized private static File getTargetFile(String targetFilePath) throws CommonException {
         Path targetFilePathObj = Paths.get(targetFilePath);
         File targetFile = targetFilePathObj.toFile();
         if (targetFile.exists()) {
@@ -233,6 +234,8 @@ public class ResourceFileCache<K, V> {
         try {
             Files.createDirectories(targetFilePathObj.getParent());
             Files.createFile(targetFilePathObj);
+            Files.write(targetFilePathObj, "{}".getBytes(StandardCharsets.UTF_8));
+            log.info("Target file \"{}\" created", targetFilePath);
             return targetFile;
         } catch (IOException exception) {
             log.error("Create target file \"{}\" failed.", targetFilePath);

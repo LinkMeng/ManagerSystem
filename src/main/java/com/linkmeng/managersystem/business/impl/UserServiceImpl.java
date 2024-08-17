@@ -4,7 +4,7 @@ import com.linkmeng.managersystem.business.UserService;
 import com.linkmeng.managersystem.common.constant.I18nConstant;
 import com.linkmeng.managersystem.common.exception.CommonException;
 import com.linkmeng.managersystem.dao.UserResourceDao;
-import com.linkmeng.managersystem.model.BooleanMessage;
+import com.linkmeng.managersystem.model.CommonMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,10 +21,10 @@ public class UserServiceImpl implements UserService {
     private UserResourceDao userResourceDao;
 
     @Override
-    public BooleanMessage checkAccount(Integer userId, String resource) throws CommonException {
+    public CommonMessage checkAccount(Integer userId, String resource) throws CommonException {
         boolean permission = userResourceDao.queryResourcesByUserId(userId).contains(resource);
         String i18nKey = permission
             ? I18nConstant.MESSAGE_USER_CHECK_ACCOUNT_SUCCEEDED : I18nConstant.MESSAGE_USER_CHECK_ACCOUNT_FAILED;
-        return BooleanMessage.of(permission, i18nKey, userId, resource);
+        return CommonMessage.of(permission, i18nKey, userId, resource);
     }
 }
