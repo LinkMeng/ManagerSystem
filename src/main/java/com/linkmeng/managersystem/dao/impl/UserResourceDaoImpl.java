@@ -7,6 +7,7 @@ import com.linkmeng.managersystem.common.cache.ResourceFileCache;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PreDestroy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,5 +58,15 @@ public class UserResourceDaoImpl implements UserResourceDao {
             userResourceMapper = ResourceFileCache.of(String.join(File.separator, ".", RESOURCE_FILE_NAME));
         }
         return userResourceMapper;
+    }
+
+    /**
+     * 刷新持久化文件
+     */
+    @PreDestroy
+    public void destroy() {
+        if (userResourceMapper != null) {
+            userResourceMapper.flush();
+        }
     }
 }

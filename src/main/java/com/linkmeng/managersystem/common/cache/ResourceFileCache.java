@@ -130,9 +130,9 @@ public class ResourceFileCache<K, V> {
                 .forEach((key, value) -> cache.merge(key, value, (oldVal, newVal) ->
                     newVal.getUpdatedTime() > oldVal.getUpdatedTime() ? newVal : oldVal));
             cache.entrySet().removeIf(entry -> entry.getValue().getValue() == null);
-            log.info("Read and merge cache file success.");
+            log.info("Read and merge cache file \"{}\" success.", targetFilePath);
         } catch (CommonException exception) {
-            log.error("Read cache file failed.", exception);
+            log.error("Read cache file \"{}\" failed.", targetFilePath, exception);
         }
     }
 
@@ -194,10 +194,21 @@ public class ResourceFileCache<K, V> {
         try (AutoCloseableLock ignored = new AutoCloseableLock(targetFileAndCacheLock)) {
             cache.entrySet().removeIf(entry -> entry.getValue().getValue() == null);
             JsonUtil.toJson(cache, getTargetFile(targetFilePath));
-            log.info("Write cache file success.");
+            log.info("Write cache file \"{}\" success.", targetFilePath);
         } catch (CommonException exception) {
-            log.error("Write cache file failed.", exception);
+            log.error("Write cache file \"{}\" failed.", targetFilePath, exception);
         }
+    }
+
+    /**
+     * 将缓存立即写入到文件
+     */
+    public void flush() {
+        log.info("Start to flush cache file \"{}\".", targetFilePath);
+        if (cachePersistenceTask != null && !cachePersistenceTask.isDone()) {
+            cachePersistenceTask.cancel(false);
+        }
+        doWriteFile();
     }
 
     /**

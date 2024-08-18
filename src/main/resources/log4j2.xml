@@ -4,7 +4,7 @@
         <Property name="PID">????</Property>
         <Property name="LOG_EXCEPTION_CONVERSION_WORD">%xwEx</Property>
         <Property name="LOG_LEVEL_PATTERN">%5p</Property>
-        <Property name="LOG_PATTERN">%d %-5p [traceId-%traceId][%t][%C %L] %enc{%m}{JSON}%n</Property>
+        <Property name="LOG_PATTERN">%d %-5p [traceId-%traceId][%t][%C %L] %m%n</Property>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT" follow="true">

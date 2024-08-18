@@ -21,9 +21,16 @@ public class CacheFileMock implements AutoCloseable {
      * 构造方法
      */
     public CacheFileMock() {
+        this(true, true);
+    }
+
+    /**
+     * 构造方法
+     */
+    public CacheFileMock(boolean exists, boolean isFile) {
         fileMock = Mockito.mock(File.class);
-        Mockito.when(fileMock.exists()).thenReturn(true);
-        Mockito.when(fileMock.isFile()).thenReturn(true);
+        Mockito.when(fileMock.exists()).thenReturn(exists);
+        Mockito.when(fileMock.isFile()).thenReturn(isFile);
         pathMock = Mockito.mock(Path.class);
         Mockito.when(pathMock.toFile()).thenReturn(fileMock);
     }
